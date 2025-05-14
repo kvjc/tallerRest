@@ -1,0 +1,426 @@
+📌 1. ¿Qué es una API?
+API significa "Application Programming Interface" (Interfaz de Programación de Aplicaciones).
+
+Una API es un conjunto de reglas que permite que dos aplicaciones hablen entre sí.
+
+En el contexto de tu quiz (y de tu proyecto en Java con Spring), una API:
+
+Es un conjunto de URL disponibles públicamente para que otras aplicaciones (por ejemplo, Postman o el frontend) puedan acceder a tu sistema (crear usuarios, ver tareas, eliminar proyectos, etc).
+
+Cada una de esas URLs tiene una función, y a eso lo llamamos endpoint.
+
+📌 2. ¿Qué es un endpoint?
+Un endpoint es una dirección URL específica que hace una acción específica.
+
+Ejemplo:
+
+http
+Copiar
+Editar
+GET /api/projects/5
+Ese endpoint:
+
+Está en la API de proyectos.
+
+Usa el verbo GET (para obtener información).
+
+El número 5 es el ID del proyecto que quieres consultar.
+
+Verbo HTTP (muy importante para el quiz):
+
+Verbo	¿Qué hace?
+GET	Obtener información
+POST	Crear algo nuevo
+PUT	Actualizar completamente
+PATCH	Actualizar parcialmente
+DELETE	Eliminar algo
+
+📌 3. ¿Qué es un controlador (controller)?
+Un controlador es una clase en Java que define los endpoints.
+
+Por ejemplo, en tu proyecto hay una clase llamada ProjectRestController.
+
+Ese archivo dice:
+
+java
+Copiar
+Editar
+@RestController
+@RequestMapping("/api/projects")
+public class ProjectRestController {
+Eso significa que esta clase tiene los endpoints que están bajo la ruta /api/projects.
+
+Por ejemplo, uno de sus métodos es:
+
+java
+Copiar
+Editar
+@GetMapping("/{id}")
+public ResponseEntity<ProjectOutDTO> getProjectById(@PathVariable Long id) {
+→ Este endpoint devuelve un proyecto según su ID.
+→ Si haces un GET a /api/projects/5, este método te da el proyecto con ID 5.
+
+📌 4. ¿Qué es un servicio (service)?
+Una clase de servicio es una capa intermedia entre el controlador y la base de datos.
+
+El controlador recibe la solicitud (por ejemplo, "crear una tarea").
+
+El servicio sabe cómo hacerlo (por ejemplo, guardar en la base de datos).
+
+Se recomienda usar servicios para separar la lógica del negocio.
+
+En tu proyecto:
+
+java
+Copiar
+Editar
+@Service
+public class ProjectService implements IProjectService {
+    private final ProjectRepository projectRepository;
+
+    public ProjectService(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
+
+    public Project save(Project project) {
+        return projectRepository.save(project);
+    }
+}
+→ Este servicio sabe cómo guardar un proyecto usando projectRepository.
+
+📌 5. ¿Qué es un repositorio (repository)?
+Un repositorio es una interfaz que habla directamente con la base de datos.
+
+Spring te da herramientas para que no tengas que escribir SQL manualmente. Tú defines una interfaz como:
+
+java
+Copiar
+Editar
+public interface ProjectRepository extends CrudRepository<Project, Long> {
+}
+Y automáticamente puedes hacer:
+
+java
+Copiar
+Editar
+projectRepository.save(project);
+projectRepository.findById(1L);
+projectRepository.deleteById(1L);
+📌 6. ¿Qué es un DTO (Data Transfer Object)?
+Un DTO es un objeto que se usa para enviar y recibir información por la API.
+
+Hay tres tipos comunes de DTOs:
+
+DTO de entrada (por ejemplo, ProjectInDTO) → lo que el cliente manda.
+
+DTO de salida (por ejemplo, ProjectOutDTO) → lo que el servidor responde.
+
+DTO de actualización (por ejemplo, ProjectUpdateDTO) → lo que se manda para modificar.
+
+Ejemplo de ProjectInDTO:
+
+java
+Copiar
+Editar
+public class ProjectInDTO {
+    private String name;
+    private String description;
+}
+→ Este es el formato que esperas recibir cuando alguien hace POST /api/projects.
+
+📌 7. ¿Qué es un mapper?
+Un mapper convierte entre un DTO y una entidad.
+
+Ejemplo:
+
+El DTO tiene name y description.
+
+Pero la entidad Project también tiene id, tasks, etc.
+
+Por eso necesitas un Mapper, para pasar de una cosa a la otra.
+
+Spring usa MapStruct, una herramienta que hace esto automáticamente si defines la interfaz.
+
+Ejemplo:
+
+java
+Copiar
+Editar
+@Mapper(componentModel = "spring")
+public interface ProjectMapper {
+    Project toProject(ProjectInDTO dto);
+    ProjectOutDTO toProjectOutDTO(Project project);
+}
+MapStruct genera el código automáticamente.
+
+📌 8. ¿Qué es Spring Security?
+Spring Security es una librería que protege tu API. Por ejemplo:
+
+Que solo los usuarios autenticados puedan crear tareas.
+
+Que solo un admin pueda borrar proyectos.
+
+Hay dos formas comunes de seguridad:
+
+Con autenticación por usuario y contraseña.
+
+Con JWT (JSON Web Token).
+
+📌 9. ¿Qué es JWT?
+JWT (JSON Web Token) es una forma de decir "quién soy" en cada petición.
+
+Flujo típico:
+
+Te logueas con usuario y contraseña.
+
+El backend te responde con un token JWT.
+
+Tú guardas ese token (en Postman, navegador...).
+
+En cada petición futura, envías el token en el header:
+
+http
+Copiar
+Editar
+Authorization: Bearer eyJhbGciOiJIUzI1...
+Ese token le dice al backend que eres tú.
+
+En tu proyecto hay clases para autenticación personalizada como:
+
+CustomAuthenticationFilter
+
+CustomAuthenticationManager
+
+CustomAuthenticationProvider
+
+Y una clase SecurityConfig para configurar la seguridad.
+
+📌 10. ¿Cómo se relacionan todas estas partes?
+Ejemplo: crear un nuevo proyecto
+
+El frontend (o Postman) envía un POST a /api/projects con un JSON:
+
+json
+Copiar
+Editar
+{
+  "name": "Nuevo proyecto",
+  "description": "Este es mi proyecto"
+}
+El controlador recibe ese JSON como ProjectInDTO.
+
+El mapper convierte el ProjectInDTO en un Project.
+
+El servicio guarda el Project usando el ProjectRepository.
+
+El resultado se convierte en un ProjectOutDTO.
+
+El controlador devuelve ese DTO al cliente.
+
+¿Quieres que te arme una tabla-resumen o un esquema visual con estas capas? También puedo prepararte una lista de ejemplos que puedes probar en Postman con el proyecto que tienes.
+
+
+
+
+
+
+
+Dijiste:
+que es rest?
+
+
+ChatGPT dijo:
+Excelente pregunta. Vamos a explicarlo de la manera más clara y sencilla posible.
+
+🌐 ¿Qué es REST?
+REST significa Representational State Transfer.
+
+Es un estilo de arquitectura que usamos para construir APIs.
+En otras palabras: REST es una forma organizada de crear servicios web para que otras aplicaciones puedan comunicarse contigo por Internet usando URLs.
+
+🧠 ¿Qué hace REST tan especial?
+REST se basa en principios simples que permiten que diferentes aplicaciones (como tu navegador, Postman o una app móvil) puedan interactuar con un servidor de forma estándar.
+
+Estos principios son:
+
+1. Usa los verbos HTTP correctamente:
+Verbo HTTP	Acción REST típica
+GET	Obtener datos (leer)
+POST	Crear algo nuevo
+PUT	Actualizar completamente
+PATCH	Actualizar parcialmente
+DELETE	Eliminar algo
+
+Ejemplo:
+
+http
+Copiar
+Editar
+GET /api/users → Obtiene todos los usuarios  
+POST /api/users → Crea un nuevo usuario  
+DELETE /api/users/5 → Borra el usuario con ID 5
+2. Las rutas son como nombres de recursos
+Un recurso puede ser cualquier cosa: usuarios, proyectos, tareas...
+
+REST dice: en vez de decir "hazUnaConsultaParaVerUsuarios", mejor usa una URL clara:
+
+http
+Copiar
+Editar
+GET /api/users
+3. Todo se hace a través de URLs (endpoints)
+Por ejemplo:
+
+/api/products → lista de productos
+
+/api/products/5 → producto con ID 5
+
+/api/users/2/orders → pedidos del usuario con ID 2
+
+Cada endpoint representa un recurso o una acción sobre un recurso.
+
+4. REST es stateless
+Significa que el servidor no guarda información entre peticiones.
+Cada vez que haces una petición, debes enviar todo lo que el servidor necesita (como tu token JWT si estás autenticado).
+
+🧪 ¿Cómo se usa REST con Postman o con un navegador?
+Con Postman puedes simular que eres un cliente REST.
+
+Por ejemplo:
+
+Método: POST
+
+URL: http://localhost:8080/api/products
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "name": "Zapatos",
+  "price": 100.0,
+  "description": "Zapatos cómodos"
+}
+Presionas "Send" y si todo está bien, se crea un nuevo producto.
+
+🎯 Entonces, ¿qué es una API REST?
+Una API REST es simplemente:
+
+Una interfaz web
+
+Que expone recursos mediante endpoints
+
+Usando los verbos HTTP estándar
+
+Con intercambio de datos normalmente en JSON
+
+¿Te gustaría que te dé un resumen visual o un esquema de cómo funciona una API REST completa (desde Postman hasta la base de datos)?
+
+
+
+
+
+
+
+Dijiste:
+explicame mejor lo que es un DTO por favor 
+
+
+ChatGPT dijo:
+¡Por supuesto! Vamos paso a paso.
+
+🧱 ¿Qué es un DTO?
+DTO significa Data Transfer Object (Objeto de Transferencia de Datos).
+Un DTO es una clase especial que se usa para transportar datos entre el cliente (por ejemplo, Postman o el frontend) y el servidor (tu aplicación Spring Boot).
+
+⚠️ Importante: ¡El DTO no es la entidad que se guarda en la base de datos! Solo es un contenedor de datos para enviar y recibir información.
+
+🎯 ¿Por qué usamos DTOs?
+Imagina que tienes una entidad User con 10 atributos (incluyendo la contraseña, tokens, auditoría, etc). Pero cuando un cliente hace una petición, solo necesitas enviarle 3 datos: nombre, email y rol.
+
+En lugar de exponer toda la entidad, creamos un DTO que solo contiene los datos necesarios.
+
+Esto ayuda a:
+
+✅ No exponer información sensible
+✅ Evitar enviar o recibir demasiada información
+✅ Tener más control sobre los datos que entran y salen
+✅ Separar la lógica del dominio de la lógica de transporte
+
+🔁 Ejemplo completo de DTOs
+Supón que tienes esta entidad:
+
+java
+Copiar
+Editar
+// Entidad que va a la base de datos
+public class User {
+    private Long id;
+    private String name;
+    private String email;
+    private String password;
+    private String role;
+    private LocalDateTime createdAt;
+}
+Y tú quieres:
+
+Recibir del cliente: solo name, email y password
+
+Enviar al cliente: solo id, name y role
+
+Entonces haces 2 DTOs:
+
+📨 DTO de Entrada (cuando el cliente envía datos)
+java
+Copiar
+Editar
+public class UserInDTO {
+    private String name;
+    private String email;
+    private String password;
+}
+📤 DTO de Salida (cuando tú le envías datos al cliente)
+java
+Copiar
+Editar
+public class UserOutDTO {
+    private Long id;
+    private String name;
+    private String role;
+}
+🧭 ¿Dónde se usan los DTOs?
+En los controladores (@RestController)
+
+Para recibir datos del cliente:
+public ResponseEntity<UserOutDTO> create(@RequestBody UserInDTO dto)
+
+Para enviar respuestas al cliente:
+return ResponseEntity.ok(userOutDTO);
+
+En los mappers
+
+Convertimos de DTO → Entidad y de Entidad → DTO
+para que puedas guardar y devolver datos correctamente.
+
+🧰 ¿Y cómo se transforma un DTO en una entidad?
+Con un mapper, que puede ser manual o usando MapStruct:
+
+java
+Copiar
+Editar
+// Manual
+public User toEntity(UserInDTO dto) {
+    User user = new User();
+    user.setName(dto.getName());
+    user.setEmail(dto.getEmail());
+    user.setPassword(dto.getPassword());
+    return user;
+}
+✅ Resumen
+Concepto	Qué hace
+DTO	Lleva datos entre el cliente y el servidor
+UserInDTO	Recibe datos del cliente
+UserOutDTO	Envía datos al cliente
+Entidad (User)	Modelo real que se guarda en la base de datos
+Mapper	Convierte entre DTOs y entidades

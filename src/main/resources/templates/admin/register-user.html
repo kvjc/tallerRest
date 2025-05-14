@@ -1,0 +1,23 @@
+<!-- templates/admin/register-user.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registrar Usuario</title>
+    <link rel="stylesheet" th:href="@{/admin/css/styles.css}" />
+</head>
+<body>
+    <h2>Registrar nuevo usuario</h2>
+    <form th:action="@{/admin/usuarios/registrar}" th:object="${usuario}" method="post">
+        <label for="username">Usuario:</label>
+        <input type="text" th:field="*{username}" required />
+        <br />
+        <label for="email">Correo:</label>
+        <input type="email" th:field="*{email}" required />
+        <br />
+        <label for="password">Contraseña:</label>
+        <input type="password" th:field="*{password}" required />
+        <br />
+        <button type="submit">Registrar</button>
+    </form>
+</body>
+</html>

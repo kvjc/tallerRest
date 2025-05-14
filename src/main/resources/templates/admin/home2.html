@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .info-box {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Panel de Administrador</h1>
+    
+    <div class="info-box">
+        <h2>Información de Usuario</h2>
+        <p><strong>Nombre de usuario:</strong> <span th:text="${username}">username</span></p>
+        <p><strong>Roles asignados:</strong> <span th:text="${roles}">roles</span></p>
+        <p><strong>¿Es admin?</strong> 
+            <span th:if="${isAdmin}" class="success">SÍ</span>
+            <span th:unless="${isAdmin}" class="error">NO</span>
+        </p>
+    </div>
+    
+    <div class="info-box">
+        <h2>Debug de Seguridad</h2>
+        <p>Si puedes ver esta página, es porque tienes acceso a la ruta /admin/home.</p>
+        <p>Sin embargo, el sistema considera que tu rol es: <strong th:text="${role}">ROLE</strong></p>
+    </div>
+    
+    <div>
+        <a href="/user/home">Ir a página de usuario</a> | 
+        <a href="/logout">Cerrar sesión</a>
+    </div>
+</body>
+</html>

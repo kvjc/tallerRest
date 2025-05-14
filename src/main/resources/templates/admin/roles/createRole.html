@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Crear Rol</title>
+</head>
+<body>
+    <h1>Crear un nuevo rol</h1>
+    <form action="/roles/create" method="post">
+        <label for="roleName">Nombre del rol:</label>
+        <input type="text" name="roleName" required/>
+        <button type="submit">Crear rol</button>
+    </form>
+</body>
+</html>

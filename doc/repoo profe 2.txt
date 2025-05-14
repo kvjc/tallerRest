@@ -1,0 +1,137 @@
+🧠 1. Conceptos fundamentales que debes saber
+✅ Qué es una API REST
+Es una forma de comunicar el cliente (como Postman o un frontend) con el servidor usando HTTP (GET, POST, PUT, DELETE).
+
+REST tiene reglas claras: usar URLs limpias, métodos HTTP correctos, y respuestas con código de estado.
+
+✅ Qué es un endpoint
+Es una URL que responde a una solicitud.
+
+Ejemplo: GET /api/users/5 es un endpoint que devuelve el usuario con id 5.
+
+✅ Qué es un DTO
+Lo acabamos de ver: es un objeto intermedio entre lo que se guarda en la base de datos y lo que se envía o recibe del cliente.
+
+✅ Qué es una entidad
+Es la clase que representa una tabla en la base de datos. Tiene anotaciones como @Entity, @Id, etc.
+
+✅ Qué es un controlador (@RestController)
+Es donde defines los endpoints. Aquí recibes las peticiones del cliente.
+
+Usas anotaciones como:
+
+@PostMapping, @GetMapping, @PutMapping, @DeleteMapping
+
+@RequestBody, @PathVariable
+
+✅ Qué es un servicio (@Service)
+Es la capa intermedia entre el controlador y el repositorio.
+
+Aquí se pone la lógica de negocio, validaciones, reglas de transformación.
+
+✅ Qué es un repositorio (@Repository)
+Es la capa que se conecta a la base de datos usando Spring Data JPA.
+
+Tiene métodos como findById(), save(), deleteById(), etc.
+
+✅ Qué es un Mapper (o MapStruct)
+Es quien convierte:
+
+DTO → Entidad
+
+Entidad → DTO
+
+Puede ser manual (con código Java) o automático (con MapStruct).
+
+🔐 2. Spring Security y JWT
+🔒 Spring Security
+Es el sistema de autenticación/autorización que protege los endpoints.
+
+Permite decir quién puede acceder a qué parte de la API.
+
+🔐 JWT (JSON Web Token)
+Es un token que se genera cuando un usuario se loguea.
+
+Se envía en el header Authorization:
+Authorization: Bearer <token>
+
+El servidor lo usa para verificar si el usuario está autenticado.
+
+En el quiz, probablemente te den un JWT funcionando. Solo tienes que saber cómo probar endpoints con Postman y qué endpoints requieren token.
+
+🧪 3. Cosas prácticas que pueden ponerte
+A. Probar endpoints con Postman:
+Enviar un POST con un JSON en el body.
+
+Enviar un token JWT en los headers.
+
+Ver que un GET /api/elemento/{id} devuelva el objeto correcto.
+
+B. Crear un nuevo endpoint
+Agregar un nuevo método en un @RestController.
+
+Usar @RequestBody, @PathVariable.
+
+C. Agregar un DTO y usar un Mapper
+Crear InDTO y OutDTO.
+
+Hacer el mapper (con MapStruct o manual).
+
+Usarlo en el controlador.
+
+D. Agregar lógica en el servicio
+Crear un método que hace algo especial (ej. filtrar o calcular).
+
+Llamarlo desde el controlador.
+
+E. Validar la seguridad
+Probar que un endpoint sin token da 401.
+
+Probar que con el token correcto accedes.
+
+📁 4. Ejemplo de estructura que te pueden dar
+Supón que te dan un contexto de "Clínica y pacientes" (en lugar de proyectos y tareas):
+
+markdown
+Copiar
+Editar
+- model
+   - Patient.java
+- dto
+   - patient
+       - PatientInDTO.java
+       - PatientOutDTO.java
+- repository
+   - PatientRepository.java
+- service
+   - IPatientService.java
+   - PatientServiceImpl.java
+- controller
+   - rest
+       - PatientRestController.java
+- mapper
+   - PatientMapper.java
+Lo que podrías tener que hacer:
+
+Crear un endpoint GET /api/patients
+
+Crear un DTO nuevo
+
+Añadir lógica de negocio en PatientServiceImpl
+
+Asegurar el endpoint con JWT
+
+Probarlo en Postman
+
+✅ Recomendación: cosas que sí debes saber hacer tú solo
+Crear un controlador REST con los métodos básicos (CRUD).
+
+Crear DTOs y un mapper.
+
+Usar @Autowired o constructor para inyectar servicios.
+
+Saber usar Optional, ResponseEntity, @PathVariable, @RequestBody.
+
+Probar endpoints en Postman (con y sin JWT).
+
+Leer errores en consola para ver si falta algo en Spring Security o DTO.
